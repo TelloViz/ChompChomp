@@ -146,8 +146,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\BasicWindow.h" />
+    <ClInclude Include="include\TickClock.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="include\BasicWindow.cpp" />
     <ClCompile Include="source\Source.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

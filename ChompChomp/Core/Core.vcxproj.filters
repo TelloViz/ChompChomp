@@ -18,9 +18,15 @@
     <ClInclude Include="include\BasicWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\TickClock.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Source.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="include\BasicWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

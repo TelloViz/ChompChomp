@@ -8,5 +8,7 @@ public:
 
 
 private:
-
+	void Input() {}
+	void Update() {}
+	void Render() {}
 };
