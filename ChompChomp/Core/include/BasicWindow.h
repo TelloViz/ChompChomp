@@ -4,13 +4,15 @@
 
 namespace core
 {
-     class BasicWindow
+     class BasicWindow : public sf::NonCopyable
      {
      public:
 
-          BasicWindow(sf::Vector2u size);
+          
+          BasicWindow(unsigned width, unsigned height);
 
           void Clear() { window.clear(); }
+          void Clear(sf::Color color) { window.clear(color); }
           void Draw(const sf::Drawable& drawable, const sf::RenderStates& states = sf::RenderStates::Default) { window.draw(drawable); }
           void Display() { window.display(); }
 
@@ -24,8 +26,10 @@ namespace core
           bool IsOpen() { return window.isOpen(); }
           bool PollEvent(sf::Event& event);
           void Close() { window.close(); }
-          
+
+          //operator sf::RenderWindow&() { return window; }
+          operator const sf::RenderWindow&() { return window; }
      private:
           sf::RenderWindow window;
      };
-}
+};

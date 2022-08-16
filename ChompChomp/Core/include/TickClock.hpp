@@ -1,14 +1,16 @@
 #pragma once
 #include <SFML/System/Clock.hpp>
 
-
-class TickClock
+namespace core
 {
-public:
-     TickClock() {}
-     sf::Time GetElapsedTime() const {}
-     sf::Time Restart() {}
-private:
-     sf::Clock clock;
+     class TickClock
+     {
+     public:
+          TickClock() {}
+          sf::Time GetElapsedTime() const { return clock.getElapsedTime(); }
+          sf::Time Restart() { return clock.restart(); }
+     private:
+          sf::Clock clock;
 
-};
+     };
+}

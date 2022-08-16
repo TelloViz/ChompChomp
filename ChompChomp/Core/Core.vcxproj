@@ -117,6 +117,7 @@
       <PreprocessorDefinitions>SFML_STATIC;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Users\lollisjosh\Desktop\ChompChomp_Repo\ChompChomp\Core\deps\SFML_2.5.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -134,6 +135,7 @@
       <PreprocessorDefinitions>SFML_STATIC;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Users\lollisjosh\Desktop\ChompChomp_Repo\ChompChomp\Core\deps\SFML_2.5.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -146,10 +148,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\BasicWindow.h" />
+    <ClInclude Include="include\Clickable.hpp" />
+    <ClInclude Include="include\FocusBorder.hpp" />
+    <ClInclude Include="include\Grid.hpp" />
+    <ClInclude Include="include\ImageFileReader.hpp" />
     <ClInclude Include="include\TickClock.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="include\BasicWindow.cpp" />
+    <ClCompile Include="include\FocusBorder.cpp" />
+    <ClCompile Include="include\Grid.cpp" />
     <ClCompile Include="source\Source.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,9 +1,11 @@
 #include "BasicWindow.h"
 
-core::BasicWindow::BasicWindow(sf::Vector2u size)
+core::BasicWindow::BasicWindow(unsigned width, unsigned height)
 {
-     window.create(sf::VideoMode(size.x, size.y), "Basic Window");
+     window.create(sf::VideoMode(width, height), "Basic Window");
+     window.setFramerateLimit(60);
 }
+
 
 bool core::BasicWindow::PollEvent(sf::Event& event)
 {
