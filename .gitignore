@@ -1,7 +1,7 @@
 
 *.lib
 *.dll
-/deps/
+deps/
 
 
 ## Ignore Visual Studio temporary files, build results, and
