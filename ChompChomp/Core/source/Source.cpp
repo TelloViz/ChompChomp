@@ -38,7 +38,7 @@ int main()
 
      sf::Sprite mySprite;
      mySprite.setTexture(myTexture);
-     mySprite.setScale(sf::Vector2f(2.0f, 2.0f));
+     mySprite.setScale(sf::Vector2f(1.0f, 1.0f));
      mySprite.setPosition(sf::Vector2f(win.GetSize().x / 2 - (myTexture.getSize().x * mySprite.getScale().x) / 2, win.GetSize().y / 2 - (myTexture.getSize().y * mySprite.getScale().y) / 2));
 
 
