@@ -1,5 +1,0 @@
-sfml-graphics-s.lib
-sfml-window-s.lib	
-sfml-audio-s.lib	
-sfml-network-s.lib	
-sfml-system-s.lib	
