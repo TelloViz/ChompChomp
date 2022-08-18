@@ -150,15 +150,36 @@
     <ClInclude Include="include\BasicWindow.h" />
     <ClInclude Include="include\Clickable.hpp" />
     <ClInclude Include="include\FocusBorder.hpp" />
+    <ClInclude Include="include\game.hpp" />
     <ClInclude Include="include\Grid.hpp" />
     <ClInclude Include="include\ImageFileReader.hpp" />
+    <ClInclude Include="include\NamedEntity.hpp" />
     <ClInclude Include="include\TickClock.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="include\BasicWindow.cpp" />
-    <ClCompile Include="include\FocusBorder.cpp" />
-    <ClCompile Include="include\Grid.cpp" />
+    <ClCompile Include="source\BasicWindow.cpp" />
+    <ClCompile Include="source\FocusBorder.cpp" />
+    <ClCompile Include="source\game.cpp" />
+    <ClCompile Include="source\Grid.cpp" />
     <ClCompile Include="source\Source.cpp" />
+    <ClCompile Include="source\testmain.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="image.png" />
+    <Image Include="pond.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="openal32.dll" />
+    <None Include="sfml-audio-2.dll" />
+    <None Include="sfml-audio-d-2.dll" />
+    <None Include="sfml-graphics-2.dll" />
+    <None Include="sfml-graphics-d-2.dll" />
+    <None Include="sfml-network-2.dll" />
+    <None Include="sfml-network-d-2.dll" />
+    <None Include="sfml-system-2.dll" />
+    <None Include="sfml-system-d-2.dll" />
+    <None Include="sfml-window-2.dll" />
+    <None Include="sfml-window-d-2.dll" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

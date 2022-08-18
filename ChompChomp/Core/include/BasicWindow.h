@@ -1,15 +1,18 @@
 #pragma once
+#include "Clickable.hpp"
+#include "NamedEntity.hpp"
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 
+
 namespace core
 {
-     class BasicWindow : public sf::NonCopyable
+     class BasicWindow : public sf::NonCopyable, public Clickable, public NamedEntity
      {
      public:
 
           
-          BasicWindow(unsigned width, unsigned height);
+          BasicWindow(unsigned width, unsigned height, std::string name);
 
           void Clear() { window.clear(); }
           void Clear(sf::Color color) { window.clear(color); }
@@ -29,7 +32,18 @@ namespace core
 
           //operator sf::RenderWindow&() { return window; }
           operator const sf::RenderWindow&() { return window; }
+
+          // Inherited via Clickable
+          virtual void OnClicked() override;
+
+          // Inherited via NamedEntity
+          virtual std::string Name() const override;
      private:
           sf::RenderWindow window;
+          std::string name;
+          
+
+          
+
      };
 };
