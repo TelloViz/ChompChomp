@@ -9,7 +9,7 @@ core::BasicWindow::BasicWindow(unsigned width, unsigned height, std::string name
      window.create(sf::VideoMode(width, height), name, sf::Style::Titlebar | sf::Style::Close);
    
      
-     window.setFramerateLimit(60);
+     //window.setFramerateLimit(60);
 }
 
 

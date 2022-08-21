@@ -1,23 +1,33 @@
 #include "../include/game.hpp"
 #include "../include/ImageFileReader.hpp"
 
-game::Game::Game() : window(500, 500,"Chomp Chomp")
+game::Game::Game() : window(500, 500, "Gyo-Fish")
 {
-
+     darkenedWaterOverlayShape.setFillColor(sf::Color(0.0f, 0.0f, 0.0f, 75.0f));
+     darkenedWaterOverlayShape.setSize(sf::Vector2f(overworldQuadrantVec[activeQuadrant].width, overworldQuadrantVec[activeQuadrant].height));
+     darkenedWaterOverlayShape.setPosition(sf::Vector2f(overworldQuadrantVec[activeQuadrant].left, overworldQuadrantVec[activeQuadrant].top));
 }
 
 void game::Game::Run()
 {
      InitOverWorld();  
 
-
-     
+     float fps = 1.0f / 60.0f;
+     sf::Time elapsed;
      while (window.IsOpen())
      {
+          elapsed += clock.Restart();
           std::vector<sf::Event> events;
           PollEvents(events);
           Input(events);
-          Update();
+
+          while(elapsed.asSeconds() > fps)
+          {
+
+               Update(1.0f/60.0f);
+               elapsed -= sf::Time(sf::seconds(fps));
+          }
+          
           Render();
      }
 }
@@ -55,7 +65,6 @@ void game::Game::Input(std::vector<sf::Event>& events)
                OnClose(i);
                break;
           case sf::Event::Resized:
-               std::cout << "Resized Window to " << i.size.width << ", " << i.size.height << std::endl;
                OnResized(i);
                break;
           case sf::Event::EventType::LostFocus:
@@ -91,22 +100,54 @@ void game::Game::Input(std::vector<sf::Event>& events)
      }
 }
 
-void game::Game::Update()
+void game::Game::Update(float dt)
 {
-     if (pondSprite.getScale().x != DEFAULT_POND_SPRITE_SCALE.x || pondSprite.getScale().y != DEFAULT_POND_SPRITE_SCALE.y)
+     //darkenedWaterOverlayShape.setPosition(overworldQuadrantVec[activeQuadrant].left, overworldQuadrantVec[activeQuadrant].top);
+     dtPerPoolAccumulator += sf::Time(sf::seconds(dt));
+     if (dtPerPoolAccumulator.asSeconds() >= dtPerDarkenedPool.asSeconds())
      {
-          //pondSprite.setScale(DEFAULT_POND_SPRITE_SCALE);
-          pondSprite.setPosition(window.GetSize().x / 2.0f - pondSprite.getGlobalBounds().width / 2.0f, window.GetSize().y / 2.0f - pondSprite.getGlobalBounds().height / 2.0f);
-          std::cout << std::format("Pond Sprite Scale Set to {}, {}", DEFAULT_POND_SPRITE_SCALE.x, DEFAULT_POND_SPRITE_SCALE.y) << std::endl;
+          dtPerPoolAccumulator -= dtPerDarkenedPool;
+          switch (activeQuadrant)
+          {
+          case game::Game::TL:
+               activeQuadrant = TR;
+               break;
+          case game::Game::TR:
+               activeQuadrant = BL;
+               break;
+          case game::Game::BL:
+               activeQuadrant = BR;
+               break;
+          case game::Game::BR:
+               activeQuadrant = TL;
+               break;
+          case game::Game::NONE:
+               break;
+          default:
+               break;
+          }
+          darkenedWaterOverlayShape.setPosition(overworldQuadrantVec[activeQuadrant].left, overworldQuadrantVec[activeQuadrant].top);
+          
      }
-     
 }
 
 void game::Game::Render()
 {
      window.Clear();
-     window.Draw(pondSprite);
 
+     if (currState == GameState::OVER_WORLD)
+     {
+          window.Draw(pondSprite);
+          window.Draw(darkenedWaterOverlayShape);
+
+          
+          /*for (auto i : overworldQuadrantVec)
+          {
+               darkenedWaterOverlayShape.setPosition(sf::Vector2f(i.left, i.top));
+               window.Draw(darkenedWaterOverlayShape);
+          }*/
+
+     }
      if (currState == GameState::MINI_GAME)
      {
           
@@ -152,12 +193,12 @@ void game::Game::OnKeyReleased(sf::Event& event)
      case game::OVER_WORLD:
           if (event.key.code == sf::Keyboard::Key::P)
           {
-               pondSprite.setScale(sf::Vector2f(pondSprite.getScale().x + 0.50f, pondSprite.getScale().y + 0.50f));
+               shouldIncreaseScale = true;
                       
           }
           if (event.key.code == sf::Keyboard::Key::M)
           {
-               pondSprite.setScale(sf::Vector2f(pondSprite.getScale().x - 0.50f, pondSprite.getScale().y - 0.50f));
+               shouldDecreaseScale = true;
           }
          
                

@@ -4,6 +4,7 @@
 #include <format>
 #include "SFML/Graphics.hpp"
 #include "../../Core/include/BasicWindow.h"
+#include "../../Core/include/TickClock.hpp"
 
 namespace game
 {
@@ -26,7 +27,7 @@ namespace game
 		void InitMiniGame();
 
 		void Input(std::vector<sf::Event>& events);
-		void Update();
+		void Update(float dt);
 		void Render();
 
 		void PollEvents(std::vector<sf::Event>& eventVec);
@@ -60,27 +61,53 @@ namespace game
 		void OnMiniGame_MousePressed(sf::Event& event);
 		void OnMiniGame_MouseReleased(sf::Event& event);
 		
-		enum OverworldQuadrant { TL, TR, BL, BR };
+		enum OverworldQuadrant { TL, TR, BL, BR, NONE };
+		OverworldQuadrant activeQuadrant{ TL };
 		bool is_TL_Active{ false };
 		bool is_TR_Active{ false };
 		bool is_BL_Active{ false };
 		bool is_BR_Active{ false };
 
-		std::vector<sf::FloatRect> overworldQuadrantVec;
+		std::vector<OverworldQuadrant> overworldEnumVec
+		{
+			OverworldQuadrant::TL,
+			OverworldQuadrant::TR,
+			OverworldQuadrant::BL,
+			OverworldQuadrant::BR
+		};
+
+		std::vector<sf::FloatRect> overworldQuadrantVec
+		{
+			sf::FloatRect(sf::Vector2f(128.0f,128.0f), sf::Vector2f(120.0f,120.0f)),
+			sf::FloatRect(sf::Vector2f(253.0f, 128.0f), sf::Vector2f(120.0f, 120.0f)),
+			sf::FloatRect(sf::Vector2f(128.0f, 253.0f), sf::Vector2f(120.0f,120.0f)),
+			sf::FloatRect(sf::Vector2f(253.0f, 253.0f), sf::Vector2f(120.0f, 120.0f))
+		};
+		
+		sf::RectangleShape darkenedWaterOverlayShape; // TODO make a semi-transparent layer for the water tiles when fish is below surface.
+		const sf::Time dtPerDarkenedPool{ sf::Time(sf::seconds(120.0f / 60.0f)) };
+		sf::Time dtPerPoolAccumulator{ sf::Time{} };
 
 		GameState currState{ OVER_WORLD };
 		core::BasicWindow window;
 		sf::Vector2f DEFAULT_WINDOW_SIZE{ 500.0f,500.0f };
+
+		core::TickClock clock;
+
 		sf::Texture pondTexture;
 		sf::Sprite pondSprite;
-		const sf::Vector2f DEFAULT_POND_SPRITE_SCALE{ 1.0f, 1.0f };
+		const sf::Vector2f DEFAULT_POND_SPRITE_SCALE{ 5.0f,5.0f };
+		sf::Vector2f	 prevSpriteScale{ DEFAULT_POND_SPRITE_SCALE };
+
+		bool shouldIncreaseScale{ false };
+		bool shouldDecreaseScale{ false };
 
 		std::vector<sf::Sprite> overworld_drawables;
 		std::vector<sf::Sprite> minigame_drawables;
 
 		bool isImagesLoaded{ false };
 
-		sf::RectangleShape darkenedWaterOverlayShape; // TODO make a semi-transparent layer for the water tiles when fish is below surface.
+		
 
 	};
 }
