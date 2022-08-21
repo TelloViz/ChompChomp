@@ -70,14 +70,17 @@ namespace game
 
 		GameState currState{ OVER_WORLD };
 		core::BasicWindow window;
+		sf::Vector2f DEFAULT_WINDOW_SIZE{ 500.0f,500.0f };
 		sf::Texture pondTexture;
 		sf::Sprite pondSprite;
-		sf::Vector2f POND_SPRITE_SCALE{ 2.5f, 2.5f };
+		const sf::Vector2f DEFAULT_POND_SPRITE_SCALE{ 1.0f, 1.0f };
 
 		std::vector<sf::Sprite> overworld_drawables;
 		std::vector<sf::Sprite> minigame_drawables;
 
 		bool isImagesLoaded{ false };
+
+		sf::RectangleShape darkenedWaterOverlayShape; // TODO make a semi-transparent layer for the water tiles when fish is below surface.
 
 	};
 }

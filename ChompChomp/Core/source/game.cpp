@@ -34,10 +34,10 @@ void game::Game::InitOverWorld()
           }
      }
      pondSprite.setTexture(pondTexture);
-     pondSprite.setScale(POND_SPRITE_SCALE);
-     pondSprite.setPosition(window.GetSize().x / 2.0f - pondSprite.getGlobalBounds().width/ 2.0f, window.GetSize().y / 2.0f - pondSprite.getGlobalBounds().height / 2.0f);
+     pondSprite.setScale(DEFAULT_POND_SPRITE_SCALE);
+     pondSprite.setPosition(window.GetSize().x / 2.0f - (pondTexture.getSize().x * pondSprite.getScale().x)/ 2.0f, window.GetSize().y / 2.0f - (pondTexture.getSize().y * pondSprite.getScale().y) / 2.0f);
 
-     overworld_drawables.push_back(pondSprite);
+     //overworld_drawables.push_back(pondSprite);
 
 }
 
@@ -47,14 +47,15 @@ void game::Game::InitMiniGame()
 
 void game::Game::Input(std::vector<sf::Event>& events)
 {
-     for (sf::Event i : events)
+     for (sf::Event& i : events)
      {
           switch (i.type)
           {
-          case sf::Event::EventType::Closed:
+          case sf::Event::Closed:
                OnClose(i);
                break;
-          case sf::Event::EventType::Resized:
+          case sf::Event::Resized:
+               std::cout << "Resized Window to " << i.size.width << ", " << i.size.height << std::endl;
                OnResized(i);
                break;
           case sf::Event::EventType::LostFocus:
@@ -92,11 +93,11 @@ void game::Game::Input(std::vector<sf::Event>& events)
 
 void game::Game::Update()
 {
-     if (pondSprite.getScale().x != POND_SPRITE_SCALE.x || pondSprite.getScale().y != POND_SPRITE_SCALE.y)
+     if (pondSprite.getScale().x != DEFAULT_POND_SPRITE_SCALE.x || pondSprite.getScale().y != DEFAULT_POND_SPRITE_SCALE.y)
      {
-          pondSprite.setScale(POND_SPRITE_SCALE);
+          //pondSprite.setScale(DEFAULT_POND_SPRITE_SCALE);
           pondSprite.setPosition(window.GetSize().x / 2.0f - pondSprite.getGlobalBounds().width / 2.0f, window.GetSize().y / 2.0f - pondSprite.getGlobalBounds().height / 2.0f);
-          std::cout << std::format("Pond Sprite Scale Set to {}, {}", POND_SPRITE_SCALE.x, POND_SPRITE_SCALE.y) << std::endl;
+          std::cout << std::format("Pond Sprite Scale Set to {}, {}", DEFAULT_POND_SPRITE_SCALE.x, DEFAULT_POND_SPRITE_SCALE.y) << std::endl;
      }
      
 }
@@ -129,7 +130,7 @@ void game::Game::OnClose(sf::Event& event)
 
 void game::Game::OnResized(sf::Event& event)
 {
-
+         
 }
 
 void game::Game::OnLostFocus(sf::Event& event)
@@ -151,18 +152,14 @@ void game::Game::OnKeyReleased(sf::Event& event)
      case game::OVER_WORLD:
           if (event.key.code == sf::Keyboard::Key::P)
           {
-               POND_SPRITE_SCALE.x += 0.50f;
-               POND_SPRITE_SCALE.y+= 0.50f;
-               sf::Vector2f newScale{ POND_SPRITE_SCALE};
-               //pondSprite.setScale(newScale);
+               pondSprite.setScale(sf::Vector2f(pondSprite.getScale().x + 0.50f, pondSprite.getScale().y + 0.50f));
+                      
           }
           if (event.key.code == sf::Keyboard::Key::M)
           {
-               POND_SPRITE_SCALE.x -= 0.50f;
-               POND_SPRITE_SCALE.y -= 0.50f;
-               //pondSprite.setScale(newScale);
-               //pondSprite.setScale(newScale);
+               pondSprite.setScale(sf::Vector2f(pondSprite.getScale().x - 0.50f, pondSprite.getScale().y - 0.50f));
           }
+         
                
           break;
      case game::MINI_GAME:

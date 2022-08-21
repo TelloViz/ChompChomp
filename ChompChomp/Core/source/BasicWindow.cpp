@@ -6,14 +6,21 @@
 
 core::BasicWindow::BasicWindow(unsigned width, unsigned height, std::string name = "Basic Window") : name(name)
 {
-     window.create(sf::VideoMode(width, height), name);
+     window.create(sf::VideoMode(width, height), name, sf::Style::Titlebar | sf::Style::Close);
+   
+     
      window.setFramerateLimit(60);
 }
 
 
 bool core::BasicWindow::PollEvent(sf::Event& event)
 {
-     return window.pollEvent(event);
+     if (window.pollEvent(event))
+     {
+          return true;
+     }
+     else return false;
+     
 }
 
 void core::BasicWindow::OnClicked()
