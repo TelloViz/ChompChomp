@@ -38,7 +38,7 @@ namespace core
 
           // Inherited via NamedEntity
           virtual std::string Name() const override;
-     private:
+     protected:
           sf::RenderWindow window;
           std::string name;
           

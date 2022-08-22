@@ -1,8 +1,10 @@
 #include "../include/game.hpp"
 #include "../include/ImageFileReader.hpp"
 
+//#include "../include/DebugState.hpp"
 
-game::Game::Game() : window(500, 500, "Gyo-Fish")
+
+game::Game::Game() : window(500, 500, "Gyo-Fish"), debugWindow(300,150, "DebugState")
 {
      darkenedWaterOverlayShape.setFillColor(sf::Color(0.0f, 0.0f, 0.0f, 75.0f));
      darkenedWaterOverlayShape.setSize(sf::Vector2f(overworldQuadrantVec[activeQuadrant].width, overworldQuadrantVec[activeQuadrant].height));
@@ -12,7 +14,20 @@ game::Game::Game() : window(500, 500, "Gyo-Fish")
 void game::Game::Run()
 {
      LoadConfig();
-     InitOverWorld();  
+     InitOverWorld(); 
+
+     //debug::DebugState debState(300, 150, "DebugWindow");
+
+     if (!DEFAULT_FONT.loadFromFile(DEFAULT_FONT_FILEPATH))
+     {
+          // error...
+     }
+
+     mousePosText.setFont(DEFAULT_FONT);
+     mousePosText.setCharacterSize(DEFAULT_CHAR_SIZE);
+     mousePosText.setFillColor(DEFAULT_COLOR);
+     mousePosText.setStyle(DEFAULT_TEXT_STYLE);
+     mousePosText.setString(MOUSE_POS_MSG);
 
      float fps = 1.0f / 60.0f;
      sf::Time elapsed;
@@ -27,9 +42,12 @@ void game::Game::Run()
           {
 
                Update(1.0f/60.0f);
+               DebugUpdate();
                elapsed -= sf::Time(sf::seconds(fps));
           }
           
+
+          DebugRender();
           Render();
      }
 }
@@ -127,6 +145,7 @@ void game::Game::Update(float dt)
           darkenedWaterOverlayShape.setPosition(overworldQuadrantVec[activeQuadrant].left, overworldQuadrantVec[activeQuadrant].top);
           
      }
+     
 }
 
 void game::Game::Render()
@@ -153,6 +172,12 @@ void game::Game::Render()
      window.Display();
 }
 
+void game::Game::DebugRender()
+{
+     debugWindow.Clear();
+     debugWindow.Draw(mousePosText);
+     debugWindow.Display();
+}
 void game::Game::PollEvents(std::vector<sf::Event>& eventVec)
 {
      sf::Event event;
@@ -160,6 +185,27 @@ void game::Game::PollEvents(std::vector<sf::Event>& eventVec)
      {
           eventVec.push_back(event);
      }
+}
+
+void game::Game::PollDebugEvents()
+{
+     sf::Event event;
+     while (debugWindow.PollEvent(event))
+     {
+          if (event.type == sf::Event::Closed)
+          {
+               debugWindow.Close();
+          }
+     }
+}
+
+void game::Game::DebugUpdate()
+{
+     std::string temp{ MOUSE_POS_MSG };
+     //temp.append(std::format("{}, {}", sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y));
+
+     //mousePosText.setString(temp);
+     mousePosText.setString(std::format("{}, {}", sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y));
 }
 
 void game::Game::OnClose(sf::Event& event)
@@ -216,6 +262,7 @@ void game::Game::OnMouseButtonPressed(sf::Event& event)
           OnOverWorld_MousePressed(event);
           break;
      case game::MINI_GAME:
+          OnMiniGame_MousePressed(event);
           break;
      default:
           break;
@@ -227,8 +274,10 @@ void game::Game::OnMouseButtonReleased(sf::Event& event)
      switch (currState)
      {
      case game::OVER_WORLD:
+          OnOverWorld_MouseReleased(event);
           break;
      case game::MINI_GAME:
+          OnMiniGame_MouseReleased(event);
           break;
      default:
           break;
@@ -240,8 +289,10 @@ void game::Game::OnMouseMoved(sf::Event& event)
      switch (currState)
      {
      case game::OVER_WORLD:
+          //std::cout << "Mouse at: " << sf::Mouse::getPosition(window).x << ", " << sf::Mouse::getPosition(window).y << std::endl;
           break;
      case game::MINI_GAME:
+          //std::cout << "Mouse at: " << sf::Mouse::getPosition(window).x << ", " << sf::Mouse::getPosition(window).y << std::endl;
           break;
      default:
           break;
@@ -276,6 +327,10 @@ void game::Game::OnMouseLeft(sf::Event& event)
 
 void game::Game::OnOverWorld_MousePressed(sf::Event& event)
 {
+     if (darkenedWaterOverlayShape.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))))
+     {
+          currState = GameState::MINI_GAME;
+     }
 }
 
 void game::Game::OnOverWorld_MouseReleased(sf::Event& event)

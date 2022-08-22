@@ -151,6 +151,7 @@
     <ClInclude Include="include\BasicWindow.h" />
     <ClInclude Include="include\Clickable.hpp" />
     <ClInclude Include="include\ConfigHandler.h" />
+    <ClInclude Include="include\DebugState.hpp" />
     <ClInclude Include="include\Fish.h" />
     <ClInclude Include="include\FishGameConfigLoader.h" />
     <ClInclude Include="include\FishGameConfigWriter.h" />
@@ -164,6 +165,7 @@
   <ItemGroup>
     <ClCompile Include="source\BasicWindow.cpp" />
     <ClCompile Include="source\ConfigHandler.cpp" />
+    <ClCompile Include="source\DebugState.cpp" />
     <ClCompile Include="source\Fish.cpp" />
     <ClCompile Include="source\FishGameConfigLoader.cpp" />
     <ClCompile Include="source\FishGameConfigWriter.cpp" />

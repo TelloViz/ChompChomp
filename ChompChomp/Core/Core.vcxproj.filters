@@ -54,6 +54,9 @@
     <ClInclude Include="include\Fish.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\DebugState.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Source.cpp">
@@ -84,6 +87,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\Fish.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\DebugState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

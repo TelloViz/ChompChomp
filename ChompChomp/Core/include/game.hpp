@@ -1,12 +1,16 @@
 #pragma once
-#include <vector>
-#include <iostream>
-#include <format>
-#include "SFML/Graphics.hpp"
-#include "../include/BasicWindow.h"
+
+
+#include "BasicWindow.h"
 #include "../include/TickClock.hpp"
 #include "../deps/random.hpp"
 #include "../include/ConfigHandler.h"
+
+#include <vector>
+#include <iostream>
+#include <format>
+#include <string>
+#include "SFML/Graphics.hpp"
 
 namespace game
 {
@@ -18,6 +22,7 @@ namespace game
 
 	class Game
 	{
+		//friend class core::DebugState;
 	public:
 		Game();
 		void Run();
@@ -98,6 +103,9 @@ namespace game
 		core::BasicWindow window;
 		sf::Vector2f DEFAULT_WINDOW_SIZE{ 500.0f,500.0f };
 
+		core::BasicWindow debugWindow;
+		sf::Vector2f DEFAULT_DEBUG_WINDOW_SIZE{ 300.0f, 150.0f };
+
 		core::TickClock clock;
 
 		sf::Texture pondTexture;
@@ -113,7 +121,20 @@ namespace game
 
 		bool isImagesLoaded{ false };
 
-		
+		void PollDebugEvents();
+		void DebugUpdate();
+		void DebugRender();
 
+
+		sf::Font DEFAULT_FONT;
+		std::string DEFAULT_FONT_FILEPATH{ "arial.ttf" };
+		int DEFAULT_CHAR_SIZE{ 32 };
+		sf::Color DEFAULT_COLOR{ sf::Color::White };
+		sf::Text::Style DEFAULT_TEXT_STYLE{ sf::Text::Regular };
+		std::string MOUSE_POS_MSG{ "Mouse Pos: " };
+		sf::Text mousePosText;
+
+		
+		
 	};
 }
