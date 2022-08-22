@@ -1,6 +1,7 @@
 #include "../include/game.hpp"
 #include "../include/ImageFileReader.hpp"
 
+
 game::Game::Game() : window(500, 500, "Gyo-Fish")
 {
      darkenedWaterOverlayShape.setFillColor(sf::Color(0.0f, 0.0f, 0.0f, 75.0f));
@@ -10,6 +11,7 @@ game::Game::Game() : window(500, 500, "Gyo-Fish")
 
 void game::Game::Run()
 {
+     LoadConfig();
      InitOverWorld();  
 
      float fps = 1.0f / 60.0f;
@@ -30,6 +32,18 @@ void game::Game::Run()
           
           Render();
      }
+}
+
+void game::Game::LoadConfig()
+{
+     FishGameApp_ConfigHandler configHandler;
+     configHandler.ReadConfigFile();
+     std::string configVal;
+     if (!configHandler.FindConfig("DEFAULT_WINDOW_WIDTH", configVal))
+     {
+          std::cout << "Config Not Loaded" << std::endl;
+     }
+     std::cout << configVal << std::endl;
 }
 
 void game::Game::InitOverWorld()
@@ -107,25 +121,9 @@ void game::Game::Update(float dt)
      if (dtPerPoolAccumulator.asSeconds() >= dtPerDarkenedPool.asSeconds())
      {
           dtPerPoolAccumulator -= dtPerDarkenedPool;
-          switch (activeQuadrant)
-          {
-          case game::Game::TL:
-               activeQuadrant = TR;
-               break;
-          case game::Game::TR:
-               activeQuadrant = BL;
-               break;
-          case game::Game::BL:
-               activeQuadrant = BR;
-               break;
-          case game::Game::BR:
-               activeQuadrant = TL;
-               break;
-          case game::Game::NONE:
-               break;
-          default:
-               break;
-          }
+          
+          activeQuadrant = OverworldQuadrant(RandomInt(0, 3));
+          
           darkenedWaterOverlayShape.setPosition(overworldQuadrantVec[activeQuadrant].left, overworldQuadrantVec[activeQuadrant].top);
           
      }
@@ -291,3 +289,5 @@ void game::Game::OnMiniGame_MousePressed(sf::Event& event)
 void game::Game::OnMiniGame_MouseReleased(sf::Event& event)
 {
 }
+
+

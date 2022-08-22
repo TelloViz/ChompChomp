@@ -147,8 +147,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="deps\random.hpp" />
     <ClInclude Include="include\BasicWindow.h" />
     <ClInclude Include="include\Clickable.hpp" />
+    <ClInclude Include="include\ConfigHandler.h" />
+    <ClInclude Include="include\Fish.h" />
+    <ClInclude Include="include\FishGameConfigLoader.h" />
+    <ClInclude Include="include\FishGameConfigWriter.h" />
     <ClInclude Include="include\FocusBorder.hpp" />
     <ClInclude Include="include\game.hpp" />
     <ClInclude Include="include\Grid.hpp" />
@@ -158,6 +163,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\BasicWindow.cpp" />
+    <ClCompile Include="source\ConfigHandler.cpp" />
+    <ClCompile Include="source\Fish.cpp" />
+    <ClCompile Include="source\FishGameConfigLoader.cpp" />
+    <ClCompile Include="source\FishGameConfigWriter.cpp" />
     <ClCompile Include="source\FocusBorder.cpp" />
     <ClCompile Include="source\game.cpp" />
     <ClCompile Include="source\Grid.cpp" />

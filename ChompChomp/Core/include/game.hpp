@@ -3,12 +3,15 @@
 #include <iostream>
 #include <format>
 #include "SFML/Graphics.hpp"
-#include "../../Core/include/BasicWindow.h"
-#include "../../Core/include/TickClock.hpp"
+#include "../include/BasicWindow.h"
+#include "../include/TickClock.hpp"
+#include "../deps/random.hpp"
+#include "../include/ConfigHandler.h"
 
 namespace game
 {
 
+	
 
 	enum GameState{OVER_WORLD, MINI_GAME};
 	enum GameStateTransition{FISH_ON, WIN_LOSE};
@@ -22,7 +25,7 @@ namespace game
 
 	private:
 
-
+		void LoadConfig();
 		void InitOverWorld();
 		void InitMiniGame();
 
@@ -41,7 +44,10 @@ namespace game
 			if (currState == GameState::MINI_GAME) currState = GameState::OVER_WORLD;
 		}
 
-
+		int RandomInt(int min, int max)
+		{
+			return effolkronium::random_static::get(min, max);
+		}
 
 		void OnClose(sf::Event& event);
 		void OnResized(sf::Event& event);
