@@ -83,7 +83,7 @@ void game::Game::InitOverWorld()
 
 void game::Game::InitMiniGame()
 {
-     timeRemaining = DEFAULT_MINI_GAME_START_TIME;
+     
 
      if (!isImagesLoaded)
      {
@@ -111,6 +111,28 @@ void game::Game::InitMiniGame()
      fishMarkerSprite.setTexture(fishMarkerTexture);
      fishMarkerSprite.setScale(DEFAULT_MINIGAME_SPRITE_SCALE);
      fishMarkerSprite.setPosition(/*window.GetSize().x / 2.0f - (fishMarkerTexture.getSize().x * fishMarkerSprite.getScale().x) / 2.0f*/150.0f, window.GetSize().y / 2.0f - (fishMarkerTexture.getSize().y * fishMarkerSprite.getScale().y) / 2.0f);
+
+     currDirection = FishDirection(RandomInt(UP, DOWN));
+     int directionFactor = 0;
+
+     switch (currDirection)
+     {
+     case game::Game::UP:
+          directionFactor = -1;
+          break;
+     case game::Game::STILL:
+          directionFactor = 0;
+          break;
+     case game::Game::DOWN:
+          directionFactor = 1;
+          break;
+     default:
+          break;
+     }
+     currFishSpeed = RandomInt(minFishSpeed, maxFishSpeed);
+     timeRemaining = DEFAULT_MINI_GAME_START_TIME;
+
+
      
 }
 
@@ -190,6 +212,8 @@ void game::Game::Update(float dt)
 {
      //darkenedWaterOverlayShape.setPosition(overworldQuadrantVec[activeQuadrant].left, overworldQuadrantVec[activeQuadrant].top);
      dtPerPoolAccumulator += sf::Time(sf::seconds(dt));
+     dtPerSpeedChangeAcuumulator += sf::Time(sf::seconds(dt));
+     dtPerDirectionChangeAcuumulator += sf::Time(sf::seconds(dt));
      
      if (currState == GameState::MINI_GAME)
      {
@@ -210,6 +234,23 @@ void game::Game::Update(float dt)
           darkenedWaterOverlayShape.setPosition(overworldQuadrantVec[activeQuadrant].left, overworldQuadrantVec[activeQuadrant].top);
           
      }
+
+     if (dtPerDirectionChangeAcuumulator >= dtPerDirectionChange)
+     {
+          dtPerDirectionChangeAcuumulator -= dtPerDirectionChange;
+          currDirection = FishDirection(RandomInt(UP, DOWN));
+          
+
+          
+     }
+
+     if (dtPerSpeedChangeAcuumulator >= dtPerSpeedChange)
+     {
+          dtPerSpeedChangeAcuumulator -= dtPerSpeedChange;
+          currFishSpeed = RandomInt(minFishSpeed, maxFishSpeed);
+     }
+
+     fishMarkerSprite.move(sf::Vector2f{ 0.0f, currDirection * currFishSpeed * dt });
      
 }
 

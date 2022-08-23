@@ -102,6 +102,21 @@ namespace game
 
 		sf::Color DEFAULT_DARKENED_WATER_COLOR{ sf::Color(0.0f, 0.0f, 0.0f, 75.0f) };
 
+
+		enum FishDirection{UP=-1, STILL=0, DOWN=1};
+		FishDirection currDirection{STILL};
+		
+
+		int minFishSpeed{10};
+		int maxFishSpeed{30};
+		int currFishSpeed{0};
+
+		const sf::Time dtPerDirectionChange{ sf::Time(sf::seconds(90.0f / 60.0f)) };
+		sf::Time dtPerDirectionChangeAcuumulator{ sf::Time{} };
+
+		const sf::Time dtPerSpeedChange{ sf::Time(sf::seconds(100.0f / 60.0f)) };
+		sf::Time dtPerSpeedChangeAcuumulator{ sf::Time{} };
+
 		std::string DEFAULT_GAME_WINDOW_TITLE{ "Gyo-Fish" };
 		GameState currState{ OVER_WORLD };
 		core::BasicWindow window;
