@@ -22,10 +22,6 @@ void debug::DebugState::Draw()
      display();
 }
 
-void debug::DebugState::draw(const sf::Drawable& drawable, const sf::RenderStates& states)
-{
-     this->draw(drawable, states);
-}
 
 
 void debug::DebugState::UpdateState(core::BasicWindow& gameWindow)

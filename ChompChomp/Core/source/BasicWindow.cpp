@@ -4,13 +4,16 @@
 #include <iostream>
 #include <string>
 
-core::BasicWindow::BasicWindow(unsigned width, unsigned height, std::string name = "Basic Window") : name(name)
+core::BasicWindow::BasicWindow( unsigned width, unsigned height, std::string name = "Basic Window" ) : name{ name }
+{
+     Create(width, height, name);
+}
+
+void core::BasicWindow::Create(unsigned width, unsigned height, std::string name)
 {
      window.create(sf::VideoMode(width, height), name, sf::Style::Titlebar | sf::Style::Close);
-   
-     
-     //window.setFramerateLimit(60);
 }
+
 
 
 bool core::BasicWindow::PollEvent(sf::Event& event)

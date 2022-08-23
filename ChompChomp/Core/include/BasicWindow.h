@@ -13,6 +13,7 @@ namespace core
 
           
           BasicWindow(unsigned width, unsigned height, std::string name);
+          
 
           void Clear() { window.clear(); }
           void Clear(sf::Color color) { window.clear(color); }
@@ -41,6 +42,9 @@ namespace core
      protected:
           sf::RenderWindow window;
           std::string name;
+
+     private:
+          void Create(unsigned width, unsigned height, std::string name);
           
 
           

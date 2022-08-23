@@ -4,30 +4,23 @@
 //#include "../include/DebugState.hpp"
 
 
-game::Game::Game() : window(500, 500, "Gyo-Fish"), debugWindow(300,150, "DebugState")
+game::Game::Game() 
+     :    window(500, 500, "Gyo Fish"), 
+          debugWindow(300,150, "DebugState")
 {
-     darkenedWaterOverlayShape.setFillColor(sf::Color(0.0f, 0.0f, 0.0f, 75.0f));
-     darkenedWaterOverlayShape.setSize(sf::Vector2f(overworldQuadrantVec[activeQuadrant].width, overworldQuadrantVec[activeQuadrant].height));
-     darkenedWaterOverlayShape.setPosition(sf::Vector2f(overworldQuadrantVec[activeQuadrant].left, overworldQuadrantVec[activeQuadrant].top));
+     
 }
 
 void game::Game::Run()
 {
      LoadConfig();
+     InitDebugFonts();
+     InitDebugWindow();
      InitOverWorld(); 
+     InitMiniGame();
+     
 
-     //debug::DebugState debState(300, 150, "DebugWindow");
-
-     if (!DEFAULT_FONT.loadFromFile(DEFAULT_FONT_FILEPATH))
-     {
-          // error...
-     }
-
-     mousePosText.setFont(DEFAULT_FONT);
-     mousePosText.setCharacterSize(DEFAULT_CHAR_SIZE);
-     mousePosText.setFillColor(DEFAULT_COLOR);
-     mousePosText.setStyle(DEFAULT_TEXT_STYLE);
-     mousePosText.setString(MOUSE_POS_MSG);
+     
 
      float fps = 1.0f / 60.0f;
      sf::Time elapsed;
@@ -66,6 +59,11 @@ void game::Game::LoadConfig()
 
 void game::Game::InitOverWorld()
 {
+     activeQuadrant = OverworldQuadrant(RandomInt(0, 3));
+     darkenedWaterOverlayShape.setFillColor(DEFAULT_DARKENED_WATER_COLOR);
+     darkenedWaterOverlayShape.setSize(sf::Vector2f(overworldQuadrantVec[activeQuadrant].width, overworldQuadrantVec[activeQuadrant].height));
+     darkenedWaterOverlayShape.setPosition(sf::Vector2f(overworldQuadrantVec[activeQuadrant].left, overworldQuadrantVec[activeQuadrant].top));
+
      if (!isImagesLoaded)
      {
           core::ImageFileReader imgReader;
@@ -85,6 +83,62 @@ void game::Game::InitOverWorld()
 
 void game::Game::InitMiniGame()
 {
+     timeRemaining = DEFAULT_MINI_GAME_START_TIME;
+
+     if (!isImagesLoaded)
+     {
+          core::ImageFileReader imgReader;
+
+          if (!imgReader.ReadImageFile("minigame.png", miniGameTexture))
+          {
+
+          }
+     }
+     miniGameSprite.setTexture(miniGameTexture);
+     miniGameSprite.setScale(DEFAULT_MINIGAME_SPRITE_SCALE);
+     miniGameSprite.setPosition(window.GetSize().x / 2.0f - (miniGameTexture.getSize().x * miniGameSprite.getScale().x) / 2.0f, window.GetSize().y / 2.0f - (miniGameTexture.getSize().y * miniGameSprite.getScale().y) / 2.0f);
+
+
+     if (!isImagesLoaded)
+     {
+          core::ImageFileReader imgReader;
+
+          if (!imgReader.ReadImageFile("fishMarker.png", fishMarkerTexture))
+          {
+
+          }
+     }
+     fishMarkerSprite.setTexture(fishMarkerTexture);
+     fishMarkerSprite.setScale(DEFAULT_MINIGAME_SPRITE_SCALE);
+     fishMarkerSprite.setPosition(/*window.GetSize().x / 2.0f - (fishMarkerTexture.getSize().x * fishMarkerSprite.getScale().x) / 2.0f*/150.0f, window.GetSize().y / 2.0f - (fishMarkerTexture.getSize().y * fishMarkerSprite.getScale().y) / 2.0f);
+     
+}
+
+void game::Game::InitDebugFonts()
+{
+     if (!DEFAULT_FONT.loadFromFile(DEFAULT_FONT_FILEPATH))
+     {
+          // error...
+     }
+
+     mousePosText.setFont(DEFAULT_FONT);
+     mousePosText.setCharacterSize(DEFAULT_CHAR_SIZE);
+     mousePosText.setFillColor(DEFAULT_COLOR);
+     mousePosText.setStyle(DEFAULT_TEXT_STYLE);
+     mousePosText.setString(MOUSE_POS_MSG);
+
+     timerText.setFont(DEFAULT_FONT);
+     timerText.setCharacterSize(DEFAULT_CHAR_SIZE);
+     timerText.setFillColor(DEFAULT_COLOR);
+     timerText.setStyle(DEFAULT_TEXT_STYLE);
+     timerText.setString(TIMER_COUNTER_MSG);
+     timerText.setPosition(0.0f, DEFAULT_CHAR_SIZE);
+}
+
+void game::Game::InitDebugWindow()
+{
+     debugWindow.SetPosition(sf::Vector2i(window.GetPosition().x - 400, window.GetPosition().y));
+
 }
 
 void game::Game::Input(std::vector<sf::Event>& events)
@@ -136,6 +190,17 @@ void game::Game::Update(float dt)
 {
      //darkenedWaterOverlayShape.setPosition(overworldQuadrantVec[activeQuadrant].left, overworldQuadrantVec[activeQuadrant].top);
      dtPerPoolAccumulator += sf::Time(sf::seconds(dt));
+     
+     if (currState == GameState::MINI_GAME)
+     {
+          timeRemaining -= sf::Time(sf::seconds(dt));
+          if (timeRemaining.asSeconds() <= 0.0f)
+          {
+               WonLost();
+          }
+     }
+     
+
      if (dtPerPoolAccumulator.asSeconds() >= dtPerDarkenedPool.asSeconds())
      {
           dtPerPoolAccumulator -= dtPerDarkenedPool;
@@ -167,7 +232,9 @@ void game::Game::Render()
      }
      if (currState == GameState::MINI_GAME)
      {
-          
+          window.Draw(miniGameSprite);
+          window.Draw(fishMarkerSprite);
+         
      }
      window.Display();
 }
@@ -176,6 +243,7 @@ void game::Game::DebugRender()
 {
      debugWindow.Clear();
      debugWindow.Draw(mousePosText);
+     debugWindow.Draw(timerText);
      debugWindow.Display();
 }
 void game::Game::PollEvents(std::vector<sf::Event>& eventVec)
@@ -205,7 +273,9 @@ void game::Game::DebugUpdate()
      //temp.append(std::format("{}, {}", sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y));
 
      //mousePosText.setString(temp);
-     mousePosText.setString(std::format("{}, {}", sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y));
+     mousePosText.setString(std::format("Cursor: ({}, {})", sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y));
+     timerText.setString(std::format("Sec.Rem: {}", timeRemaining.asSeconds()));
+     
 }
 
 void game::Game::OnClose(sf::Event& event)
@@ -235,7 +305,7 @@ void game::Game::OnKeyReleased(sf::Event& event)
      switch (currState)
      {
      case game::OVER_WORLD:
-          if (event.key.code == sf::Keyboard::Key::P)
+         /* if (event.key.code == sf::Keyboard::Key::P)
           {
                shouldIncreaseScale = true;
                       
@@ -243,7 +313,7 @@ void game::Game::OnKeyReleased(sf::Event& event)
           if (event.key.code == sf::Keyboard::Key::M)
           {
                shouldDecreaseScale = true;
-          }
+          }*/
          
                
           break;
@@ -329,7 +399,7 @@ void game::Game::OnOverWorld_MousePressed(sf::Event& event)
 {
      if (darkenedWaterOverlayShape.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))))
      {
-          currState = GameState::MINI_GAME;
+          FishOn();
      }
 }
 

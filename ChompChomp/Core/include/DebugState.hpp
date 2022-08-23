@@ -16,7 +16,7 @@ namespace debug
 
           void UpdateState(core::BasicWindow& gameWindow);
      private:
-          void draw(const sf::Drawable& drawable, const sf::RenderStates& states = sf::RenderStates::Default);
+          //void draw(const sf::Drawable& drawable, const sf::RenderStates& states = sf::RenderStates::Default);
           sf::Font DEFAULT_FONT;
           std::string DEFAULT_FONT_FILEPATH{ "arial.ttf" };
           int DEFAULT_CHAR_SIZE{ 32 };
