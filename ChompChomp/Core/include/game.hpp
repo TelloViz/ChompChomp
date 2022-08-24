@@ -144,6 +144,12 @@ namespace game
 		sf::Sprite fishMarkerSprite;
 		const sf::Vector2f DEFAULT_FISH_MARKER_SCALE{ 1.0f, 1.0f };
 
+		sf::RectangleShape playerMarker;
+		const sf::Vector2f DEFAULT_PLAYER_STARTING_POS{ 229.0f,40.0f };
+		const sf::Vector2f DEFAULT_PLAYER_MARKER_SIZE{25.0f, 45.0f};
+		const sf::Color DEFAULT_PLAYER_MARKER_COLOR{ sf::Color::Green };
+		const sf::Color DEFAULT_PLAYER_MARKER_ACTIVE_COLOR{ sf::Color::Magenta };
+
 		bool isImagesLoaded{ false };
 
 		void PollDebugEvents();

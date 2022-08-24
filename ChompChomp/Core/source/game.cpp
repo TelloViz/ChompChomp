@@ -85,6 +85,11 @@ void game::Game::InitMiniGame()
 {
      
 
+     playerMarker.setSize(DEFAULT_PLAYER_MARKER_SIZE);
+     playerMarker.setPosition(DEFAULT_PLAYER_STARTING_POS);
+     playerMarker.setFillColor(DEFAULT_PLAYER_MARKER_COLOR);
+     
+
      if (!isImagesLoaded)
      {
           core::ImageFileReader imgReader;
@@ -264,17 +269,12 @@ void game::Game::Render()
           window.Draw(darkenedWaterOverlayShape);
 
           
-          /*for (auto i : overworldQuadrantVec)
-          {
-               darkenedWaterOverlayShape.setPosition(sf::Vector2f(i.left, i.top));
-               window.Draw(darkenedWaterOverlayShape);
-          }*/
-
      }
      if (currState == GameState::MINI_GAME)
      {
           window.Draw(miniGameSprite);
           window.Draw(fishMarkerSprite);
+          window.Draw(playerMarker);
          
      }
      window.Display();
@@ -311,9 +311,6 @@ void game::Game::PollDebugEvents()
 void game::Game::DebugUpdate()
 {
      std::string temp{ MOUSE_POS_MSG };
-     //temp.append(std::format("{}, {}", sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y));
-
-     //mousePosText.setString(temp);
      mousePosText.setString(std::format("Cursor: ({}, {})", sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y));
      timerText.setString(std::format("Sec.Rem: {}", timeRemaining.asSeconds()));
      
@@ -346,19 +343,21 @@ void game::Game::OnKeyReleased(sf::Event& event)
      switch (currState)
      {
      case game::OVER_WORLD:
-         /* if (event.key.code == sf::Keyboard::Key::P)
+         if (event.key.code == sf::Keyboard::Key::M)
           {
-               shouldIncreaseScale = true;
+              FishOn();
                       
           }
-          if (event.key.code == sf::Keyboard::Key::M)
-          {
-               shouldDecreaseScale = true;
-          }*/
+          
          
                
           break;
      case game::MINI_GAME:
+          if (event.key.code == sf::Keyboard::Key::M)
+          {
+               WonLost();
+
+          }
           break;
      default:
           break;
