@@ -34,7 +34,7 @@ void game::Game::Run()
           while(elapsed.asSeconds() > fps)
           {
 
-               Update(1.0f/60.0f);
+               Update(fps);
                DebugUpdate();
                elapsed -= sf::Time(sf::seconds(fps));
           }
@@ -88,7 +88,15 @@ void game::Game::InitMiniGame()
      playerMarker.setSize(DEFAULT_PLAYER_MARKER_SIZE);
      playerMarker.setPosition(DEFAULT_PLAYER_STARTING_POS);
      playerMarker.setFillColor(DEFAULT_PLAYER_MARKER_COLOR);
-     
+
+     timerMarker.setSize(DEFAULT_TIMER_MARKER_SIZE);
+     timerMarker.setPosition(DEFAULT_TIMER_STARTING_POS);
+     timerMarker.setFillColor(DEFAULT_TIMER_MARKER_COLOR);
+
+     timerShrinkingMarker.setSize(DEFAULT_SHRINKING_TIMER_MARKER_SIZE);
+     timerShrinkingMarker.setPosition(DEFAULT_SHRINKING_TIMER_STARTING_POS);
+     timerShrinkingMarker.setFillColor(DEFAULT_SHRINKING_TIMER_MARKER_COLOR);
+     timerMarker.rotate(180.0f);
 
      if (!isImagesLoaded)
      {
@@ -134,6 +142,9 @@ void game::Game::InitMiniGame()
      default:
           break;
      }
+
+
+
      currFishSpeed = RandomInt(minFishSpeed, maxFishSpeed);
      timeRemaining = DEFAULT_MINI_GAME_START_TIME;
 
@@ -216,46 +227,39 @@ void game::Game::Input(std::vector<sf::Event>& events)
 void game::Game::Update(float dt)
 {
      //darkenedWaterOverlayShape.setPosition(overworldQuadrantVec[activeQuadrant].left, overworldQuadrantVec[activeQuadrant].top);
-     dtPerPoolAccumulator += sf::Time(sf::seconds(dt));
-     dtPerSpeedChangeAcuumulator += sf::Time(sf::seconds(dt));
-     dtPerDirectionChangeAcuumulator += sf::Time(sf::seconds(dt));
+     
+     if (currState == GameState::OVER_WORLD)
+     {
+          dtPerPoolAccumulator += sf::Time(sf::seconds(dt));
+          if (dtPerPoolAccumulator.asSeconds() >= dtPerDarkenedPool.asSeconds())
+          {
+               dtPerPoolAccumulator -= dtPerDarkenedPool;
+
+               activeQuadrant = OverworldQuadrant(RandomInt(0, 3));
+
+               darkenedWaterOverlayShape.setPosition(overworldQuadrantVec[activeQuadrant].left, overworldQuadrantVec[activeQuadrant].top);
+
+          }
+     }
+    
      
      if (currState == GameState::MINI_GAME)
      {
+          
           timeRemaining -= sf::Time(sf::seconds(dt));
-          if (timeRemaining.asSeconds() <= 0.0f)
+          
+         /* if (timeRemaining.asSeconds() <= 0.0f)
           {
                WonLost();
-          }
-     }
+          } */ 
+
+          UpdateShrinkingTimerMarker(dt);
+          UpdateFishMarker(dt);
+          UpdatePlayerMarker(dt);   
+
+     }     
+
      
-
-     if (dtPerPoolAccumulator.asSeconds() >= dtPerDarkenedPool.asSeconds())
-     {
-          dtPerPoolAccumulator -= dtPerDarkenedPool;
-          
-          activeQuadrant = OverworldQuadrant(RandomInt(0, 3));
-          
-          darkenedWaterOverlayShape.setPosition(overworldQuadrantVec[activeQuadrant].left, overworldQuadrantVec[activeQuadrant].top);
-          
-     }
-
-     if (dtPerDirectionChangeAcuumulator >= dtPerDirectionChange)
-     {
-          dtPerDirectionChangeAcuumulator -= dtPerDirectionChange;
-          currDirection = FishDirection(RandomInt(UP, DOWN));
-          
-
-          
-     }
-
-     if (dtPerSpeedChangeAcuumulator >= dtPerSpeedChange)
-     {
-          dtPerSpeedChangeAcuumulator -= dtPerSpeedChange;
-          currFishSpeed = RandomInt(minFishSpeed, maxFishSpeed);
-     }
-
-     fishMarkerSprite.move(sf::Vector2f{ 0.0f, currDirection * currFishSpeed * dt });
      
 }
 
@@ -275,9 +279,48 @@ void game::Game::Render()
           window.Draw(miniGameSprite);
           window.Draw(fishMarkerSprite);
           window.Draw(playerMarker);
+          window.Draw(timerMarker);
+          window.Draw(timerShrinkingMarker);
          
      }
      window.Display();
+}
+
+void game::Game::UpdatePlayerMarker(float dt)
+{
+     if(currMarkerDirection == MarkerDirection::UP_DIR)
+          playerMarker.move(0.0f, DEFAULT_MARKER_VELOCITY.x * dt * currMarkerDirection);
+     if (currMarkerDirection == MarkerDirection::DOWN_DIR)
+          playerMarker.move(0.0f, DEFAULT_MARKER_VELOCITY.y * dt * currMarkerDirection);
+
+     if (playerMarker.getPosition().y <= MAX_UPWARD_MARKER_POS.y) SetPlayerAtMaxPosition();
+     if (playerMarker.getPosition().y >= MAX_DOWNWARD_MARKER_POS.y) SetPlayerAtMinPosition();
+}
+
+void game::Game::UpdateFishMarker(float dt)
+{
+     dtPerSpeedChangeAcuumulator += sf::Time(sf::seconds(dt));
+     dtPerDirectionChangeAcuumulator += sf::Time(sf::seconds(dt));
+
+     if (dtPerSpeedChangeAcuumulator >= dtPerSpeedChange)
+     {
+          dtPerSpeedChangeAcuumulator -= dtPerSpeedChange;
+          currFishSpeed = RandomInt(minFishSpeed, maxFishSpeed);
+     }
+
+     if (dtPerDirectionChangeAcuumulator >= dtPerDirectionChange)
+     {
+          dtPerDirectionChangeAcuumulator -= dtPerDirectionChange;
+          currDirection = FishDirection(RandomInt(FishDirection::UP, FishDirection::DOWN));
+     }
+     fishMarkerSprite.move(sf::Vector2f{ 0.0f, currDirection * currFishSpeed * dt });
+
+}
+
+void game::Game::UpdateShrinkingTimerMarker(float dt)
+{
+     float newSize = timerShrinkingMarker.getSize().y - ( dt *  DEFAULT_SHRINKING_TIMER_MARKER_VELOCITY.y);
+     timerShrinkingMarker.setSize(sf::Vector2f(timerShrinkingMarker.getSize().x, newSize));
 }
 
 void game::Game::DebugRender()
@@ -449,10 +492,32 @@ void game::Game::OnOverWorld_MouseReleased(sf::Event& event)
 
 void game::Game::OnMiniGame_MousePressed(sf::Event& event)
 {
+     if (event.mouseButton.button == sf::Mouse::Button::Left)
+     {
+               currMarkerDirection = MarkerDirection::UP_DIR;
+         
+          
+     }
 }
 
 void game::Game::OnMiniGame_MouseReleased(sf::Event& event)
 {
+     if (event.mouseButton.button == sf::Mouse::Button::Left)
+     {
+    
+               currMarkerDirection = MarkerDirection::DOWN_DIR;
+          
+     }
+}
+
+void game::Game::SetPlayerAtMaxPosition()
+{
+     playerMarker.setPosition(MAX_UPWARD_MARKER_POS);
+}
+
+void game::Game::SetPlayerAtMinPosition()
+{
+     playerMarker.setPosition(MAX_DOWNWARD_MARKER_POS);
 }
 
 

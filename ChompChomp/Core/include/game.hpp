@@ -40,6 +40,10 @@ namespace game
 		void Update(float dt);
 		void Render();
 
+		void UpdatePlayerMarker(float dt);
+		void UpdateFishMarker(float dt);
+		void UpdateShrinkingTimerMarker(float dt);
+
 		void PollEvents(std::vector<sf::Event>& eventVec);
 
 		void FishOn() 
@@ -76,6 +80,9 @@ namespace game
 		
 		void OnMiniGame_MousePressed(sf::Event& event);
 		void OnMiniGame_MouseReleased(sf::Event& event);
+
+		void SetPlayerAtMaxPosition();
+		void SetPlayerAtMinPosition();
 		
 		enum OverworldQuadrant { TL, TR, BL, BR, NONE };
 		OverworldQuadrant activeQuadrant{ NONE };
@@ -145,10 +152,36 @@ namespace game
 		const sf::Vector2f DEFAULT_FISH_MARKER_SCALE{ 1.0f, 1.0f };
 
 		sf::RectangleShape playerMarker;
-		const sf::Vector2f DEFAULT_PLAYER_STARTING_POS{ 229.0f,40.0f };
+		const sf::Vector2f DEFAULT_PLAYER_STARTING_POS{ 229.0f,250.0f };
+		const sf::Vector2f MAX_UPWARD_MARKER_POS{229.0f, 40.0f};
+		const sf::Vector2f MAX_DOWNWARD_MARKER_POS{229.0f, 415.0f};
 		const sf::Vector2f DEFAULT_PLAYER_MARKER_SIZE{25.0f, 45.0f};
 		const sf::Color DEFAULT_PLAYER_MARKER_COLOR{ sf::Color::Green };
 		const sf::Color DEFAULT_PLAYER_MARKER_ACTIVE_COLOR{ sf::Color::Magenta };
+		const sf::Vector2f DEFAULT_MARKER_VELOCITY{ 50.0f,70.0f };
+		enum MarkerDirection{UP_DIR = -1,NO_DIR =0, DOWN_DIR = 1};
+		MarkerDirection currMarkerDirection{ NO_DIR };
+
+		sf::RectangleShape timerMarker;
+		const sf::Vector2f DEFAULT_TIMER_STARTING_POS{ 288.0f,32.0f };
+		const sf::Vector2f MAX_UPWARD_TIMER_POS{ 288.0f, 32.0f };
+		const sf::Vector2f MAX_DOWNWARD_TIMER_POS{ 288.0f, 436.0f };
+		const sf::Vector2f DEFAULT_TIMER_MARKER_SIZE{ 8.0f, 436.0f };
+		const sf::Color DEFAULT_TIMER_MARKER_COLOR{ sf::Color::Cyan };
+		
+		
+		sf::RectangleShape timerShrinkingMarker;
+		const sf::Vector2f DEFAULT_SHRINKING_TIMER_STARTING_POS{ 288.0f,32.0f };
+		//const sf::Vector2f MAX_UPWARD_TIMER_POS{ 288.0f, 32.0f };
+		//const sf::Vector2f MAX_DOWNWARD_TIMER_POS{ 288.0f, 436.0f };
+		const sf::Vector2f DEFAULT_SHRINKING_TIMER_MARKER_SIZE{ 8.0f, 100.0f };
+		const sf::Color DEFAULT_SHRINKING_TIMER_MARKER_COLOR{ sf::Color::Magenta };
+		const sf::Vector2f DEFAULT_SHRINKING_TIMER_MARKER_VELOCITY{ 0.0f, -5.0f };
+
+
+		enum TimerMarkerDirection { TIMER_UP_DIR = -1, TIMER_NO_DIR = 0, TIMER_DOWN_DIR = 1 };
+		TimerMarkerDirection currTimerMarkerDirection{ TIMER_NO_DIR };
+
 
 		bool isImagesLoaded{ false };
 
