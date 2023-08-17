@@ -3,7 +3,7 @@
 
 #include "BasicWindow.h"
 #include "../include/TickClock.hpp"
-#include "../deps/random.hpp"
+#include "random.hpp"
 #include "../include/ConfigHandler.h"
 
 #include <vector>

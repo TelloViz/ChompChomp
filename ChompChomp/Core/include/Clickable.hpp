@@ -2,6 +2,7 @@
 #include "BasicWindow.h"
 #include <SFML/Graphics.hpp>
 
+
 namespace core
 {
      class Clickable
